@@ -21,7 +21,7 @@ class Planner:
         if task is None:
             raise ValueError("Task creation failed")
         
-        meal_entry.task_id = task
+        meal_entry.task_id = task.id
         
         with open(self.entries_path, 'a') as f:
             f.write(meal_entry.model_dump_json() + '\n')
@@ -36,9 +36,10 @@ class Planner:
             if entry.date == date and entry.meal == meal:
                 removed_entry_i = i
                 break
-
-        self.task_list.delete_task(entries[removed_entry_i].task_id)
-        entries.pop(removed_entry_i)
+        if removed_entry_i is not None:
+            
+            self.task_list.delete_task(entries[removed_entry_i].task_id)
+            entries.pop(removed_entry_i)
         # write entries back to file
         with open(self.entries_path, 'w') as f:
             for entry in entries:
